@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +36,7 @@ class UserService {
       print("No user data found in shared preferences.");
       return false;
     }
+
     Map<String, dynamic> userData = jsonDecode(userDataString);
     var user = User.fromJson(userData);
     String? token = prefs.getString('token');
@@ -43,26 +45,24 @@ class UserService {
       return false;
     }
 
+    log(user.id.toString());
+
     final String apiUrl =
         'https://bariergate.my.id/api/edit-profile/${user.id}';
 
     try {
       FormData formData = FormData.fromMap({
         'name': name,
-        'username': username,
-        'nipNim': nipNim,
-        'email': email,
-        'phoneNumber': phoneNumber,
+        'nip_nim': nipNim,
+        'phone_number': phoneNumber,
         'address': address,
         '_method': 'put',
         if (imageFile != null)
-          'image': await MultipartFile.fromFile(imageFile.path),
+          'image': await MultipartFile.fromFile(imageFile.path,
+              filename: imageFile.name),
       });
 
-      print('Form Data: ${formData.fields}');
-      if (imageFile != null) {
-        print('Image File Path: ${imageFile.path}');
-      }
+      log(formData.fields.toString());
 
       final response = await _dio.post(
         apiUrl,
