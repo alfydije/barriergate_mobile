@@ -81,6 +81,28 @@ class UserService {
       print('Response Status Code: ${response.statusCode}');
       print('Response Data: ${response.data}');
       if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? userDataJson = prefs.getString('user_data');
+
+        if (userDataJson != null) {
+          // Decode the JSON string to a Map
+          Map<String, dynamic> userData = jsonDecode(userDataJson);
+
+          // Update the necessary fields
+          userData['name'] = name;
+          userData['user_profile']['name'] = name;
+          userData['user_profile']['nip_nim'] = nipNim;
+          userData['user_profile']['phone_number'] = phoneNumber;
+          userData['user_profile']['address'] = address;
+
+          // Encode the Map back to a JSON string
+          String updatedUserDataJson = jsonEncode(userData);
+
+          // Save the updated JSON string to SharedPreferences
+          prefs.setString('user_data', updatedUserDataJson);
+        } else {
+          print('No user data found in SharedPreferences.');
+        }
         var responseData = response.data;
         return responseData['status'] == 'success';
       } else {

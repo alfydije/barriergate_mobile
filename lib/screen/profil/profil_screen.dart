@@ -16,13 +16,12 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-  late Future<User> _userFuture;
   final ProfileService _profileService = ProfileService();
 
   @override
   void initState() {
+    setState(() {});
     super.initState();
-    _userFuture = _profileService.fetchProfile();
   }
 
   @override
@@ -32,7 +31,7 @@ class _ProfilPageState extends State<ProfilPage> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder<User>(
-          future: _userFuture,
+          future: _profileService.fetchProfile(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -71,13 +70,14 @@ class _ProfilPageState extends State<ProfilPage> {
                       children: [
                         Expanded(
                           child: Button(
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditProfil(user: user),
                                 ),
                               );
+                              setState(() {});
                             },
                             text: 'Edit Profile',
                           ),
