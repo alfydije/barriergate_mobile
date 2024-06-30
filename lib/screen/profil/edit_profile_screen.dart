@@ -24,6 +24,7 @@ class _EditProfilState extends State<EditProfil> {
   late TextEditingController _emailController;
   late TextEditingController _phoneNumberController;
   late TextEditingController _addressController;
+  late String? _image;
 
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
@@ -42,6 +43,7 @@ class _EditProfilState extends State<EditProfil> {
         TextEditingController(text: widget.user.userProfile!.phoneNumber);
     _addressController =
         TextEditingController(text: widget.user.userProfile!.address);
+    _image = widget.user.userProfile!.image!;
   }
 
   @override
@@ -89,6 +91,7 @@ class _EditProfilState extends State<EditProfil> {
     );
 
     if (success) {
+      await _userService.getUser();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('User profile updated successfully')),
       );
@@ -108,14 +111,21 @@ class _EditProfilState extends State<EditProfil> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: [
-            if (_imageFile != null)
+            if (_imageFile != null) ...[
               Image.file(
                 File(_imageFile!.path),
                 height: 200,
                 width: 200,
                 fit: BoxFit.cover,
               )
-            else
+            ] else if (_image != null) ...[
+              Image.network(
+                'https://bariergate.my.id/storage/$_image',
+                height: 200,
+                width: 200,
+                fit: BoxFit.cover,
+              )
+            ] else
               Text('No image selected'),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

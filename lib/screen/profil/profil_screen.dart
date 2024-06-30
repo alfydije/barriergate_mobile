@@ -106,11 +106,12 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // CircleAvatar(
-        //   backgroundColor: Colors.transparent,
-        //   backgroundImage: AssetImage(user.userProfile!.image!),
-        //   radius: 20,
-        // ),
+        CircleAvatar(
+          backgroundColor: Colors.grey,
+          backgroundImage: NetworkImage(
+              'https://bariergate.my.id/storage/${user.userProfile!.image!}'),
+          radius: 20,
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
